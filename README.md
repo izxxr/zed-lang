@@ -19,6 +19,16 @@ An simple and experimental programming language written in Python 3.
 
 If you have an idea, open an issue or submit a pull request to add it on this roadmap.
 
+## Installation and usage
+The language is written in pure Python and that's why is easy to install and use. Simple
+clone this repository and use `python -m zed <filename>` command to run a `.zed` file.
+
+```
+$ git clone https://github.com/nerdguyahmad/zed-lang
+$ cd zed-lang
+$ python -m zed test.zed
+```
+
 ## Documentation
 Following is the documentation that documents current state of the language. This will be
 moved to a separate section when it gets big enough to get out of hand.
