@@ -22,21 +22,28 @@
 
 from __future__ import annotations
 
-from typing import Any
+import argparse
+import zed
 
+parser = argparse.ArgumentParser(description='CLI for the Zed language')
+parser.add_argument(
+    'filename', help='The name of file to operate on.', type=str
+)
+parser.add_argument('--lex', help='Lex the file and output tokens rather than running it.', default=False)
 
-class UndefinedType:
-    """The undefined type."""
-    def eval(self) -> str:
-        return 'undefined'
+args = parser.parse_args()
 
-    __repr__ = eval
+with open(args.filename, 'r') as f:
+    source = f.read()
+    lexer = zed.get_lexer()
 
-    def __bool__(self) -> bool:
-        return False
-
-    def __eq__(self, o: Any) -> bool:
-        return False
-
-
-UNDEFINED = UndefinedType()
+    if args.lex:
+        for token in lexer.lex(source):
+            print(token)
+    else:
+        parser = zed.get_parser()
+        try:
+            parser.parse(lexer.lex(source), state=zed.ParserState()).eval()  # type: ignore
+        except zed.CompilationError as error:
+            print(error)
+            exit()

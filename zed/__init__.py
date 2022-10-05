@@ -16,3 +16,4 @@ __author__ = 'Izhar Ahmad'
 from zed import ast as ast
 from zed.lexer import *
 from zed.parser import *
+from zed.state import *

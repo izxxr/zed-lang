@@ -27,6 +27,8 @@ The main components of this module are:
 - get_parser()   : Returns the rply.LRParser instance used for parsing the lexed code.
 - reset_parser() : Resets the cached parser such that get_parser() recreates the parser
                    instead of returning the cached value.
+- CompilationError : An exception raised when compilation fails.
+
 
 For more information regarding a specific function, read the documentation for
 that function.
@@ -42,6 +44,7 @@ import rply
 
 if TYPE_CHECKING:
     from rply.parser import LRParser
+    from rply.token import SourcePosition
     from zed.state import ParserState
 
     Tokens = List[rply.Token]
@@ -50,6 +53,7 @@ if TYPE_CHECKING:
 __all__ = (
     "get_parser",
     "reset_parser",
+    "CompilationError",
 )
 
 
@@ -78,6 +82,21 @@ def reset_parser() -> None:
     """
     global _parser
     _parser = None
+
+
+class CompilationError(Exception):
+    """An error raised when compilation fails."""
+    def __init__(self, pos: Optional[SourcePosition], message: str) -> None:
+        self.pos = pos
+        self.message = message
+
+        if pos:
+            error = "At line %r, column %r, position %r\nerror: %s" % \
+                     (pos.lineno, pos.colno, pos.idx, message)
+        else:
+            error = message
+
+        super().__init__(error)
 
 
 @_pg.production('prog : stmt_list')
@@ -112,8 +131,7 @@ def prod_expr_string(state: ParserState, tokens: Tokens):
         try:
             value = state.get_defn(ident)
         except KeyError:
-            print('error: identifier %r not defined' % ident)
-            raise NotImplementedError
+            raise CompilationError(token.getsourcepos(), 'identifier %r not defined' % ident)
         else:
             return value
 
