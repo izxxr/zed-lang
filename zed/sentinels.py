@@ -22,40 +22,19 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
-from zed.sentinels import UNDEFINED
-from zed.ast.base import BaseToken
-
-if TYPE_CHECKING:
-    from zed.state import ParserState
-
-__all__ = (
-    'String',
-    'Undefined',
-)
+from typing import Any
 
 
-class String(BaseToken):
-    """Represents a string literal.
+class UndefinedType:
+    """The undefined type."""
+    def eval(self) -> str:
+        return 'undefined'
 
-    Attributes
-    ----------
-    value: :class:`str`
-        The string literal.
-    """
-    def __init__(self, state: ParserState, **kwargs: Any) -> None:
-        super().__init__(state, **kwargs)
+    def __bool__(self) -> bool:
+        return False
 
-        self.value = kwargs.pop('value')
-
-    def eval(self):
-        return self.value
+    def __eq__(self, o: Any) -> bool:
+        return False
 
 
-class Undefined(BaseToken):
-    """Represents an undefined literal."""
-    def __init__(self, state: ParserState, **kwargs: Any) -> None:
-        super().__init__(state, **kwargs)
-
-    def eval(self):
-        return UNDEFINED
+UNDEFINED = UndefinedType()

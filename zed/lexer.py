@@ -98,7 +98,15 @@ IGNORED_TOKENS: Tuple[str, ...] = (r'\s+',)
 TOKENS: Dict[str, str] = {
     # Literals
     'LT_STRING': r'(".+")|(\'.+\')|(\'\')|("")',
+    'LT_UNDEFINED': r'undefined',
 
     # Statements
-    'STMT_PRINT': 'print',
+    'STMT_PRINT': r'print',
+    'STMT_LET': r'let',
+
+    # Operators
+    'OP_ASSIGN': r'=',
+
+    # Identifier
+    'IDENT': r'[a-zA-Z_][a-zA-Z\d_]*',
 }

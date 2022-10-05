@@ -35,6 +35,7 @@ that function.
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional, Mapping
+from zed.sentinels import UNDEFINED
 from zed import lexer, ast
 
 import rply
@@ -94,17 +95,42 @@ def prod_stmt(state: ParserState, tokens: Tokens):
     state.add_stmt(stmt)  # type: ignore
     return ast.Statements(state)
 
+@_pg.production('expr : IDENT')
 @_pg.production('expr : LT_STRING')
+@_pg.production('expr : LT_UNDEFINED')
 def prod_expr_string(state: ParserState, tokens: Tokens):
     token = tokens[0]
     tokentp = token.gettokentype()
 
+    if tokentp == 'LT_UNDEFINED':
+        return ast.Undefined(state)
     if tokentp == 'LT_STRING':
         # [1:-1] is needed to dequote the string
         return ast.String(state, value=token.getstr()[1:-1])
+    if tokentp == 'IDENT':
+        ident = token.getstr()
+        try:
+            value = state.get_defn(ident)
+        except KeyError:
+            print('error: identifier %r not defined' % ident)
+            raise NotImplementedError
+        else:
+            return value
 
     raise AssertionError('Unknown token type for expr')
 
 @_pg.production('stmt : STMT_PRINT expr')
 def prod_stmt_print(state: ParserState, tokens: Tokens):
     return ast.Print(state, value=tokens[1])
+
+@_pg.production('stmt : STMT_LET IDENT OP_ASSIGN expr')
+@_pg.production('stmt : STMT_LET IDENT')
+def prod_stmt_let(state: ParserState, tokens: Tokens):
+    ident = tokens[1].getstr()
+    if len(tokens) == 2:
+        value = UNDEFINED
+    else:
+        value = tokens[3]
+
+    state.add_defn(ident, value)  # type: ignore
+    return ast.Let(state, ident=ident, value=value)

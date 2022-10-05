@@ -22,7 +22,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, Dict, List
 
 if TYPE_CHECKING:
     from zed.ast.base import BaseToken
@@ -41,6 +41,7 @@ class ParserState:
     """
     def __init__(self) -> None:
         self._current_stmts_list: List[BaseToken] = []
+        self._definitions: Dict[str, Any] = {}
 
     def add_stmt(self, stmt: BaseToken) -> None:
         self._current_stmts_list.append(stmt)
@@ -49,3 +50,9 @@ class ParserState:
         for stmt in self._current_stmts_list:
             stmt.eval()
         self._current_stmts_list.clear()
+
+    def add_defn(self, ident: str, val: Any) -> None:
+        self._definitions[ident] = val
+
+    def get_defn(self, ident: str) -> Any:
+        return self._definitions[ident]
