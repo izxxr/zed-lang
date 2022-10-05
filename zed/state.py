@@ -56,3 +56,6 @@ class ParserState:
 
     def get_defn(self, ident: str) -> Any:
         return self._definitions[ident]
+
+    def del_defn(self, ident: str) -> Any:
+        del self._definitions[ident]

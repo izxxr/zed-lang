@@ -32,6 +32,7 @@ __all__ = (
     'Statements',
     'Print',
     'Let',
+    'Del',
 )
 
 
@@ -76,6 +77,23 @@ class Let(BaseToken):
 
         self.ident: str = kwargs.pop('ident')
         self.value: BaseToken = kwargs.pop('value')
+
+    def eval(self):
+        pass
+
+
+class Del(BaseToken):
+    """Represents a del statement.
+
+    Attributes
+    ----------
+    ident: :class:`str`
+        The identifier that is being deleted.
+    """
+    def __init__(self, state: ParserState, **kwargs: Any) -> None:
+        super().__init__(state, **kwargs)
+
+        self.ident: str = kwargs.pop('ident')
 
     def eval(self):
         pass

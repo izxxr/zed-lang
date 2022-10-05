@@ -152,3 +152,13 @@ def prod_stmt_let(state: ParserState, tokens: Tokens):
 
     state.add_defn(ident, value)  # type: ignore
     return ast.Let(state, ident=ident, value=value)
+
+@_pg.production('stmt : STMT_DEL IDENT')
+def prod_stmt_del(state: ParserState, tokens: Tokens):
+    ident = tokens[1].getstr()
+    try:
+        state.del_defn(ident)
+    except KeyError:
+        raise CompilationError(tokens[1].getsourcepos(), message='identifier %r not defined' % ident)
+    else:
+        return ast.Del(state, ident=ident)

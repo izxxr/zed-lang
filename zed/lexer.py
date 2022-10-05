@@ -103,6 +103,7 @@ TOKENS: Dict[str, str] = {
     # Statements
     'STMT_PRINT': r'print',
     'STMT_LET': r'let',
+    'STMT_DEL': r'del',
 
     # Operators
     'OP_ASSIGN': r'=',
