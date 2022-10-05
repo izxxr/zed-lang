@@ -39,10 +39,37 @@ Defines a new variable.
 - When a value is specified e.g `let a = 1`, the variable `a` gets the value of `1`
 - When a value is NOT specified e.g `let a`, the variable `a` is defaulted to `undefined` sentinel
 
+For example:
+```
+let a = 'Hello World'
+let c
+print a
+print c
+```
+The output is:
+```
+Hello World
+undefined
+```
+
 #### `del <id>`
 Deletes a variable.
 
 - `id` is the name of variable to delete
+
+For example:
+```
+let a = 'Hello World'
+print a
+del a
+print a
+```
+The output is:
+```
+Hello World
+On line 4, column 8, position 6:
+error: identifer 'a' is not defined
+```
 
 ### Types
 
